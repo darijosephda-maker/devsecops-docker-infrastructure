@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Services Production — DevSecOps UTS</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Segoe UI',sans-serif; background:#0f172a; color:#f1f5f9; min-height:100vh; }
+  header { background:linear-gradient(135deg,#065f46,#059669); padding:2rem; text-align:center; border-bottom:3px solid #10b981; }
+  header h1 { font-size:1.8rem; font-weight:700; color:#fff; }
+  header p { color:#a7f3d0; margin-top:.5rem; font-size:.95rem; }
+  .back { display:inline-block; margin:1.5rem 2rem; color:#10b981; text-decoration:none; font-size:.9rem; }
+  .back:hover { color:#34d399; }
+  .container { max-width:1100px; margin:0 auto; padding:0 2rem 3rem; }
+  .section-title { font-size:1.1rem; font-weight:700; color:#34d399; text-transform:uppercase; letter-spacing:2px; margin:2rem 0 1rem; padding-bottom:.5rem; border-bottom:1px solid #1e293b; }
+  .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1rem; margin-bottom:1rem; }
+  .stat { background:#1e293b; border:1px solid #334155; border-radius:12px; padding:1.25rem; text-align:center; }
+  .stat .num { font-size:2rem; font-weight:800; color:#10b981; }
+  .stat .lbl { color:#94a3b8; font-size:.82rem; margin-top:.3rem; }
+  .updated { color:#475569; font-size:.8rem; text-align:right; margin-bottom:1rem; }
+  table { width:100%; border-collapse:collapse; background:#1e293b; border-radius:12px; overflow:hidden; }
+  thead { background:#0f2d1f; }
+  th { padding:.9rem 1rem; text-align:left; font-size:.8rem; text-transform:uppercase; letter-spacing:1px; color:#6ee7b7; }
+  td { padding:.85rem 1rem; font-size:.875rem; border-bottom:1px solid #0f172a; }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:#263549; }
+  .dot { width:8px; height:8px; border-radius:50%; display:inline-block; margin-right:.4rem; }
+  .dot-green { background:#22c55e; animation:pulse 2s infinite; }
+  .dot-yellow { background:#eab308; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+  .tag { display:inline-block; padding:.15rem .6rem; border-radius:99px; font-size:.75rem; font-weight:600; }
+  .tag-prod { background:#14532d; color:#4ade80; }
+  .tag-harbor { background:#1e3a8a; color:#93c5fd; }
+  .tag-monitor { background:#7f1d1d; color:#fca5a5; }
+  .tag-infra { background:#1c1917; color:#a8a29e; }
+  .health-healthy { color:#22c55e; font-size:.8rem; }
+  .health-none { color:#64748b; font-size:.8rem; }
+  .network-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1rem; }
+  .network-card { background:#1e293b; border:1px solid #334155; border-radius:12px; padding:1.25rem; }
+  .network-card h3 { font-size:1rem; font-weight:600; margin-bottom:.5rem; color:#6ee7b7; }
+  .member { display:flex; align-items:center; gap:.5rem; padding:.3rem 0; font-size:.85rem; color:#94a3b8; border-bottom:1px solid #0f172a; }
+  .member:last-child { border-bottom:none; }
+  .secret-card { background:#1e293b; border:1px solid #334155; border-radius:12px; padding:1.25rem; margin-bottom:1rem; display:flex; align-items:center; gap:1rem; }
+  .secret-icon { font-size:1.5rem; }
+  .secret-info h3 { font-size:.95rem; font-weight:600; }
+  .secret-info p { font-size:.82rem; color:#64748b; margin-top:.2rem; }
+  .secret-value { margin-left:auto; font-family:monospace; background:#0f172a; padding:.3rem .8rem; border-radius:6px; font-size:.8rem; color:#4ade80; letter-spacing:2px; }
+  .spinner { text-align:center; padding:3rem; color:#475569; }
+  footer { text-align:center; padding:1.5rem; color:#475569; font-size:.85rem; border-top:1px solid #1e293b; margin-top:2rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🏗️ Services Production</h1>
+  <p>Université Thomas Sankara — Infrastructure Docker · <span id="total">...</span> conteneurs actifs</p>
+</header>
+<a class="back" href="/">← Retour au Portail</a>
+<div class="container">
+
+  <div class="section-title">📊 Vue d'ensemble</div>
+  <div class="updated">🔄 Mise à jour automatique toutes les 30s · Dernière : <span id="last-update">...</span></div>
+  <div class="stats">
+    <div class="stat"><div class="num" id="stat-total">...</div><div class="lbl">Conteneurs actifs</div></div>
+    <div class="stat"><div class="num" id="stat-healthy">...</div><div class="lbl">Healthy</div></div>
+    <div class="stat"><div class="num">9/9</div><div class="lbl">Harbor healthy</div></div>
+    <div class="stat"><div class="num">3</div><div class="lbl">Réseaux isolés</div></div>
+    <div class="stat"><div class="num">2</div><div class="lbl">Secrets Docker</div></div>
+  </div>
+
+  <div class="section-title">🐳 Conteneurs — État en temps réel</div>
+  <div id="table-container"><div class="spinner">⏳ Chargement...</div></div>
+
+  <div class="section-title">🌐 Architecture Réseau — 3 Réseaux Isolés</div>
+  <div class="network-grid">
+    <div class="network-card">
+      <h3>🌍 Réseau Frontend</h3>
+      <p style="color:#64748b;font-size:.82rem;">Accès public via Traefik · TLS terminaison</p>
+      <div class="member"><span>🔀</span> traefik</div>
+      <div class="member"><span>🌐</span> portail-uts</div>
+      <div class="member"><span>📝</span> inscription-uts</div>
+    </div>
+    <div class="network-card">
+      <h3>⚙️ Réseau Backend</h3>
+      <p style="color:#64748b;font-size:.82rem;">Isolé · Accessible uniquement via API</p>
+      <div class="member"><span>🔌</span> api-backend-uts</div>
+      <div class="member"><span>🗄️</span> database-uts</div>
+      <div class="member"><span>⚡</span> cache-uts</div>
+    </div>
+    <div class="network-card">
+      <h3>📊 Réseau Monitoring</h3>
+      <p style="color:#64748b;font-size:.82rem;">Lecture seule · Métriques uniquement</p>
+      <div class="member"><span>🔥</span> prometheus-uts</div>
+      <div class="member"><span>📊</span> grafana-uts</div>
+      <div class="member"><span>🚨</span> alertmanager-uts</div>
+      <div class="member"><span>🐳</span> cadvisor-uts</div>
+      <div class="member"><span>📡</span> node-exporter-uts</div>
+    </div>
+  </div>
+
+  <div class="section-title">🔐 Docker Secrets</div>
+  <div class="secret-card">
+    <div class="secret-icon">🔑</div>
+    <div class="secret-info">
+      <h3>postgres_user</h3>
+      <p>Identifiant PostgreSQL · Monté en tmpfs · Non visible dans les variables d'environnement</p>
+      <p style="color:#475569;font-size:.78rem;">ID : vozh0zoqoa8dq0lncnbvu3hun</p>
+    </div>
+    <div class="secret-value">••••••••</div>
+  </div>
+  <div class="secret-card">
+    <div class="secret-icon">🔒</div>
+    <div class="secret-info">
+      <h3>postgres_password</h3>
+      <p>Mot de passe PostgreSQL · Monté en tmpfs · Non visible dans les variables d'environnement</p>
+      <p style="color:#475569;font-size:.78rem;">ID : h2myf7uxg7s8dduulqzeg6l1p</p>
+    </div>
+    <div class="secret-value">••••••••</div>
+  </div>
+
+</div>
+<footer>Services Production · Université Thomas Sankara · DevSecOps 2025-2026</footer>
+
+<script>
+function getCategory(name) {
+  if (['portail-uts','inscription-uts','api-backend-uts','database-uts','cache-uts'].includes(name))
+    return '<span class="tag tag-prod">Production</span>';
+  if (['traefik','portail-admin-uts'].includes(name))
+    return '<span class="tag tag-infra">Infrastructure</span>';
+  if (['grafana-uts','prometheus-uts','alertmanager-uts','node-exporter-uts','cadvisor-uts'].includes(name))
+    return '<span class="tag tag-monitor">Monitoring</span>';
+  return '<span class="tag tag-harbor">Harbor</span>';
+}
+
+function getEmoji(name) {
+  const map = {
+    'portail-uts':'🌐','inscription-uts':'📝','api-backend-uts':'🔌',
+    'database-uts':'🗄️','cache-uts':'⚡','traefik':'🔀',
+    'portail-admin-uts':'🛡️','grafana-uts':'📊','prometheus-uts':'🔥',
+    'alertmanager-uts':'🚨','node-exporter-uts':'📡','cadvisor-uts':'🐳',
+    'nginx':'⚓','harbor-core':'⚓','harbor-jobservice':'⚓',
+    'harbor-db':'⚓','harbor-portal':'⚓','redis':'⚡',
+    'registryctl':'⚓','registry':'⚓','harbor-log':'⚓'
+  };
+  return map[name] || '📦';
+}
+
+async function loadData() {
+  try {
+    const [stats, containers] = await Promise.all([
+      fetch('/api/stats').then(r => r.json()),
+      fetch('/api/containers').then(r => r.json())
+    ]);
+
+    document.getElementById('total').textContent = stats.total;
+    document.getElementById('stat-total').textContent = stats.total;
+    document.getElementById('stat-healthy').textContent = stats.healthy + '/' + stats.total;
+    document.getElementById('last-update').textContent = stats.updated;
+
+    const rows = containers.map(c => {
+      const isHealthy = c.health === 'healthy';
+      const hasHealth = c.health !== 'none';
+      const dot = `<span class="dot dot-green"></span>`;
+      const health = hasHealth
+        ? `<span class="${isHealthy ? 'health-healthy' : 'health-none'}">${isHealthy ? '✅ Healthy' : '⚠️ ' + c.health}</span>`
+        : `<span class="health-none">—</span>`;
+      return `<tr>
+        <td>${dot}${getEmoji(c.name)} ${c.name}</td>
+        <td>✅ ${c.status} ${health}</td>
+        <td style="color:#64748b;font-size:.8rem;">${c.image}</td>
+        <td>${getCategory(c.name)}</td>
+      </tr>`;
+    }).join('');
+
+    document.getElementById('table-container').innerHTML = `
+      <table>
+        <thead><tr><th>Conteneur</th><th>Statut</th><th>Image</th><th>Catégorie</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  } catch(e) {
+    document.getElementById('table-container').innerHTML =
+      '<div class="spinner" style="color:#ef4444;">❌ Impossible de contacter l\'API Docker</div>';
+  }
+}
+
+loadData();
+setInterval(loadData, 30000);
+</script>
+</body>
+</html>

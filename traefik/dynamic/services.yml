@@ -1,0 +1,151 @@
+http:
+  routers:
+    # ── biblio ──────────────────────────────
+    biblio:
+      rule: "Host(`biblio.uts.bf`)"
+      service: biblio
+      entryPoints:
+        - websecure
+      tls: {}
+    # ── Portail Admin ──────────────────────
+    portail-admin:
+      rule: "Host(`portail.uts.bf`)"
+      service: portail-admin
+      entryPoints:
+        - websecure
+      tls: {}
+
+    # ── Harbor ────────────────────────────
+    harbor:
+      rule: "Host(`harbor.uts.bf`)"
+      service: harbor
+      entryPoints:
+        - websecure
+      tls: {}
+
+    # ── Traefik Dashboard ─────────────────
+    traefik-dash:
+      rule: "Host(`traefik.uts.bf`)"
+      service: traefik-dash
+      entryPoints:
+        - websecure
+      tls: {}
+
+    # ── Grafana ───────────────────────────
+    grafana:
+      rule: "Host(`grafana.uts.bf`)"
+      service: grafana
+      entryPoints:
+        - websecure
+      tls: {}
+
+    # ── Prometheus ────────────────────────
+    prometheus:
+      rule: "Host(`prometheus.uts.bf`)"
+      service: prometheus
+      entryPoints:
+        - websecure
+      tls: {}
+
+    # ── Prometheus Alertes ────────────────
+    prometheus-alerts:
+      rule: "Host(`prometheus.uts.bf`) && PathPrefix(`/alerts`)"
+      service: prometheus
+      entryPoints:
+        - websecure
+      tls: {}
+
+    # ── Alertmanager ──────────────────────
+    alertmanager:
+      rule: "Host(`alertmanager.uts.bf`)"
+      service: alertmanager
+      entryPoints:
+        - websecure
+      tls: {}
+
+    # ── cAdvisor ──────────────────────────
+    cadvisor:
+      rule: "Host(`cadvisor.uts.bf`)"
+      service: cadvisor
+      entryPoints:
+        - websecure
+      tls: {}
+
+    # ── API Backend ───────────────────────
+    api:
+      rule: "Host(`api.uts.bf`)"
+      service: api
+      entryPoints:
+        - websecure
+      tls: {}
+
+    # ── Inscription ───────────────────────
+    inscription:
+      rule: "Host(`inscription.uts.bf`)"
+      service: inscription
+      entryPoints:
+        - websecure
+      tls: {}
+
+    # ── Portail UTS ───────────────────────
+    portail-uts:
+      rule: "Host(`app.uts.bf`)"
+      service: portail-uts
+      entryPoints:
+        - websecure
+      tls: {}
+
+  services:
+    biblio:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.122.232:80" 
+    portail-admin:
+      loadBalancer:
+        servers:
+          - url: "http://172.24.0.2:80"
+
+    harbor:
+      loadBalancer:
+        servers:
+          - url: "http://172.18.0.10:8080"
+
+    traefik-dash:
+      loadBalancer:
+        servers:
+          - url: "http://172.21.0.3:8080"
+
+    grafana:
+      loadBalancer:
+        servers:
+          - url: "http://172.23.0.4:3000"
+
+    prometheus:
+      loadBalancer:
+        servers:
+          - url: "http://172.23.0.5:9090"
+
+    alertmanager:
+      loadBalancer:
+        servers:
+          - url: "http://172.23.0.2:9093"
+
+    cadvisor:
+      loadBalancer:
+        servers:
+          - url: "http://172.23.0.6:8080"
+
+    api:
+      loadBalancer:
+        servers:
+          - url: "http://172.19.0.2:80"
+
+    inscription:
+      loadBalancer:
+        servers:
+          - url: "http://172.21.0.2:80"
+
+    portail-uts:
+      loadBalancer:
+        servers:
+          - url: "http://172.22.0.2:80"

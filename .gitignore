@@ -1,0 +1,13 @@
+.env
+*.pem
+*.key
+*.crt
+acme.json
+htpasswd*
+secrets/
+*.log
+*.bak
+*.vdi
+data/
+volumes/
+__pycache__/

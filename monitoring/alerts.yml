@@ -1,0 +1,48 @@
+groups:
+  - name: infrastructure_uts
+    rules:
+
+      - alert: ConteneurArrete
+        expr: (time() - container_last_seen{name=~"portail-uts|inscription-uts|database-uts|api-backend-uts"}) > 60
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Conteneur critique arrêté — {{ $labels.name }}"
+          description: "Le conteneur {{ $labels.name }} ne répond plus depuis plus de 60 secondes"
+
+      - alert: CPUElevé
+        expr: 100 - (avg by(instance)(rate(node_cpu_seconds_total{mode="idle"}[2m])) * 100) > 80
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "CPU élevé sur le serveur"
+          description: "CPU > 80% depuis 2 minutes"
+
+      - alert: RAMElevée
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "RAM élevée sur le serveur"
+          description: "RAM > 85% depuis 2 minutes"
+
+      - alert: DisquePlein
+        expr: (1 - (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"})) * 100 > 80
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Disque presque plein"
+          description: "Disque / > 80% utilisé"
+
+      - alert: ServeurInaccessible
+        expr: up == 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Service inaccessible"
+          description: "Le service {{ $labels.job }} ne répond plus"

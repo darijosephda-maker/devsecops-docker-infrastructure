@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rapport Sécurité Zero Trust — DevSecOps UTS</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Segoe UI',sans-serif; background:#0f172a; color:#f1f5f9; min-height:100vh; }
+  header { background:linear-gradient(135deg,#4c1d95,#7c3aed); padding:2rem; text-align:center; border-bottom:3px solid #8b5cf6; }
+  header h1 { font-size:1.8rem; font-weight:700; color:#fff; }
+  header p { color:#ddd6fe; margin-top:.5rem; font-size:.95rem; }
+  .back { display:inline-block; margin:1.5rem 2rem; color:#8b5cf6; text-decoration:none; font-size:.9rem; }
+  .back:hover { color:#a78bfa; }
+  .container { max-width:1100px; margin:0 auto; padding:0 2rem 3rem; }
+  .section-title { font-size:1.1rem; font-weight:700; color:#a78bfa; text-transform:uppercase; letter-spacing:2px; margin:2rem 0 1rem; padding-bottom:.5rem; border-bottom:1px solid #1e293b; }
+  .score-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1rem; margin-bottom:2rem; }
+  .score-card { background:#1e293b; border:1px solid #334155; border-radius:12px; padding:1.5rem; text-align:center; }
+  .score-card .num { font-size:2.5rem; font-weight:800; }
+  .score-card .lbl { color:#94a3b8; font-size:.85rem; margin-top:.4rem; }
+  .green { color:#22c55e; } .yellow { color:#eab308; } .red { color:#ef4444; } .blue { color:#3b82f6; }
+  .cis-bar { margin-bottom:1rem; }
+  .cis-bar .label { display:flex; justify-content:space-between; margin-bottom:.4rem; font-size:.9rem; }
+  .cis-bar .bar-bg { background:#1e293b; border-radius:99px; height:10px; }
+  .cis-bar .bar-fill { height:10px; border-radius:99px; }
+  .scenario { background:#1e293b; border:1px solid #334155; border-radius:12px; padding:1.5rem; margin-bottom:1rem; }
+  .scenario-header { display:flex; align-items:center; gap:1rem; margin-bottom:.75rem; }
+  .scenario-badge { padding:.25rem .75rem; border-radius:99px; font-size:.75rem; font-weight:700; }
+  .badge-blocked { background:#14532d; color:#4ade80; }
+  .badge-detected { background:#713f12; color:#fbbf24; }
+  .scenario h3 { font-size:1rem; font-weight:600; }
+  .scenario p { color:#94a3b8; font-size:.875rem; line-height:1.6; }
+  .scenario .result { margin-top:.75rem; font-size:.85rem; display:flex; align-items:center; gap:.5rem; }
+  .cve-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:1rem; }
+  .cve-card { background:#1e293b; border:1px solid #334155; border-radius:10px; padding:1rem; text-align:center; }
+  .cve-card .num { font-size:2rem; font-weight:800; }
+  .cve-card .lbl { font-size:.8rem; color:#94a3b8; margin-top:.25rem; }
+  .timeline { border-left:2px solid #334155; padding-left:1.5rem; margin-top:1rem; }
+  .timeline-item { position:relative; margin-bottom:1.25rem; }
+  .timeline-item::before { content:''; position:absolute; left:-1.85rem; top:.35rem; width:10px; height:10px; border-radius:50%; background:#7c3aed; }
+  .timeline-item .date { font-size:.8rem; color:#64748b; }
+  .timeline-item .event { font-size:.9rem; color:#e2e8f0; margin-top:.15rem; }
+  footer { text-align:center; padding:1.5rem; color:#475569; font-size:.85rem; border-top:1px solid #1e293b; margin-top:2rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🔒 Rapport Sécurité Zero Trust</h1>
+  <p>Université Thomas Sankara — Infrastructure DevSecOps · Licence Cybersécurité 2025-2026</p>
+</header>
+<a class="back" href="/">← Retour au Portail</a>
+<div class="container">
+  <div class="section-title">📊 Score Global</div>
+  <div class="score-grid">
+    <div class="score-card"><div class="num yellow">66/100</div><div class="lbl">Score CIS Benchmark</div></div>
+    <div class="score-card"><div class="num green">0</div><div class="lbl">CVE Critiques</div></div>
+    <div class="score-card"><div class="num green">3/3</div><div class="lbl">Scénarios Red Team bloqués</div></div>
+    <div class="score-card"><div class="num green">&lt;1s</div><div class="lbl">MTTR</div></div>
+  </div>
+  <div class="section-title">🛡️ CIS Benchmark — Détail par Domaine</div>
+  <div class="cis-bar"><div class="label"><span>Isolation réseau</span><span class="green">90%</span></div><div class="bar-bg"><div class="bar-fill" style="width:90%;background:#22c55e;"></div></div></div>
+  <div class="cis-bar"><div class="label"><span>Gestion des secrets</span><span class="green">85%</span></div><div class="bar-bg"><div class="bar-fill" style="width:85%;background:#22c55e;"></div></div></div>
+  <div class="cis-bar"><div class="label"><span>Contrôle d'accès</span><span class="green">80%</span></div><div class="bar-bg"><div class="bar-fill" style="width:80%;background:#22c55e;"></div></div></div>
+  <div class="cis-bar"><div class="label"><span>Scan CVE (Trivy/Harbor)</span><span class="yellow">70%</span></div><div class="bar-bg"><div class="bar-fill" style="width:70%;background:#eab308;"></div></div></div>
+  <div class="cis-bar"><div class="label"><span>Monitoring & Alertes</span><span class="yellow">65%</span></div><div class="bar-bg"><div class="bar-fill" style="width:65%;background:#eab308;"></div></div></div>
+  <div class="cis-bar"><div class="label"><span>Chiffrement TLS (Traefik)</span><span class="yellow">60%</span></div><div class="bar-bg"><div class="bar-fill" style="width:60%;background:#eab308;"></div></div></div>
+  <div class="cis-bar"><div class="label"><span>Durcissement OS</span><span class="yellow">55%</span></div><div class="bar-bg"><div class="bar-fill" style="width:55%;background:#eab308;"></div></div></div>
+  <div class="section-title">🔴 Scénarios Red Team</div>
+  <div class="scenario">
+    <div class="scenario-header"><span class="scenario-badge badge-blocked">✅ BLOQUÉ</span><h3>Scénario 1 — Tentative d'évasion de conteneur</h3></div>
+    <p>Simulation d'une tentative d'accès au système hôte depuis un conteneur compromis via montage de volume non autorisé et escalade de privilèges.</p>
+    <div class="result"><span style="color:#4ade80;">●</span> Bloqué par isolation réseau Docker + absence de privileged mode. MTTR : 0s.</div>
+  </div>
+  <div class="scenario">
+    <div class="scenario-header"><span class="scenario-badge badge-blocked">✅ BLOQUÉ</span><h3>Scénario 2 — Mouvement latéral inter-services</h3></div>
+    <p>Tentative de communication directe entre le réseau frontend et le réseau backend sans passer par l'API.</p>
+    <div class="result"><span style="color:#4ade80;">●</span> Bloqué par segmentation réseau (3 réseaux isolés).</div>
+  </div>
+  <div class="scenario">
+    <div class="scenario-header"><span class="scenario-badge badge-detected">⚡ DÉTECTÉ</span><h3>Scénario 3 — Extraction de secrets en mémoire</h3></div>
+    <p>Tentative de lecture des variables d'environnement sensibles (credentials PostgreSQL) depuis un conteneur.</p>
+    <div class="result"><span style="color:#fbbf24;">●</span> Détecté et neutralisé. Docker Secrets monte les secrets en tmpfs. Alerte Prometheus déclenchée en &lt;1s.</div>
+  </div>
+  <div class="section-title">🔍 Analyse CVE des Images</div>
+  <div class="cve-grid">
+    <div class="cve-card"><div class="num red">0</div><div class="lbl">CRITICAL</div></div>
+    <div class="cve-card"><div class="num yellow">3</div><div class="lbl">HIGH</div></div>
+    <div class="cve-card"><div class="num blue">12</div><div class="lbl">MEDIUM</div></div>
+    <div class="cve-card"><div class="num" style="color:#94a3b8;">27</div><div class="lbl">LOW</div></div>
+    <div class="cve-card"><div class="num green">✓</div><div class="lbl">Trivy Actif</div></div>
+  </div>
+  <div class="section-title">📅 Historique</div>
+  <div class="timeline">
+    <div class="timeline-item"><div class="date">27 mai 2026 — 23:35</div><div class="event">✅ Migration IP complète : 192.168.56.13 → 192.168.122.232</div></div>
+    <div class="timeline-item"><div class="date">21 mai 2026</div><div class="event">🔒 Activation Docker Secrets pour postgres_user et postgres_password</div></div>
+    <div class="timeline-item"><div class="date">15 mai 2026</div><div class="event">🛡️ Déploiement Traefik v2.10 avec TLS auto-signé</div></div>
+    <div class="timeline-item"><div class="date">09 mai 2026</div><div class="event">⚓ Déploiement Harbor v2.11.0 en mode Air-Gap avec Trivy</div></div>
+  </div>
+</div>
+<footer>Rapport Sécurité Zero Trust · Université Thomas Sankara · DevSecOps 2025-2026</footer>
+</body>
+</html>

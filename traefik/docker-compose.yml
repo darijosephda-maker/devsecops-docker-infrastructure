@@ -1,0 +1,21 @@
+services:
+  traefik:
+    image: traefik:v2.10
+    container_name: traefik
+    restart: always
+    command:
+      - "--configfile=/traefik.yml"
+    ports:
+      - "8081:80"
+      - "8443:443"
+      - "8080:8080"
+    volumes:
+      - ./traefik.yml:/traefik.yml:ro
+      - ./dynamic:/etc/traefik/dynamic:ro
+      - ./certs:/etc/traefik/certs:ro
+    networks:
+      - traefik_network
+
+networks:
+  traefik_network:
+    driver: bridge

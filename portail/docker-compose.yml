@@ -1,0 +1,33 @@
+services:
+  portail-admin:
+    image: nginx:alpine
+    container_name: portail-admin-uts
+    restart: always
+    ports:
+      - "8888:80"
+    volumes:
+      - ./:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - portail_net
+    depends_on:
+      - portail-backend
+
+  portail-backend:
+    build: ./backend
+    container_name: portail-backend-uts
+    restart: always
+    ports:
+      - "5000:5000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /home/docker/traefik/dynamic:/traefik/dynamic:rw
+    networks:
+      - portail_net
+      - monitoring_monitoring_net
+
+networks:
+  portail_net:
+    driver: bridge
+  monitoring_monitoring_net:
+    external: true

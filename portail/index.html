@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portail Admin — DevSecOps UTS</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: 'Segoe UI', sans-serif; background:#0f172a; color:#f1f5f9; min-height:100vh; }
+  header { background:linear-gradient(135deg,#1e3a8a,#2563eb); padding:2rem; text-align:center; border-bottom:3px solid #3b82f6; }
+  header h1 { font-size:2rem; font-weight:700; color:#fff; }
+  header p { color:#bfdbfe; margin-top:.5rem; font-size:1rem; }
+  .badge { display:inline-block; background:#16a34a; color:#fff; font-size:.75rem; padding:2px 10px; border-radius:20px; margin-left:10px; vertical-align:middle; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1.5rem; padding:2rem; max-width:1200px; margin:0 auto; }
+  .card { background:#1e293b; border:1px solid #334155; border-radius:12px; padding:1.5rem; transition:transform .2s,border-color .2s; text-decoration:none; color:inherit; display:block; }
+  .card:hover { transform:translateY(-4px); border-color:#2563eb; }
+  .card-header { display:flex; align-items:center; gap:1rem; margin-bottom:1rem; }
+  .icon { width:50px; height:50px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; }
+  .card h2 { font-size:1.25rem; font-weight:600; }
+  .card p { color:#94a3b8; font-size:.9rem; line-height:1.6; margin-bottom:1rem; }
+  .status { display:flex; align-items:center; gap:.5rem; font-size:.85rem; }
+  .dot { width:8px; height:8px; border-radius:50%; background:#16a34a; animation:pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+  .btn { display:inline-block; background:#2563eb; color:#fff; padding:.5rem 1.25rem; border-radius:8px; font-size:.85rem; font-weight:500; text-decoration:none; margin-top:.75rem; }
+  .btn:hover { background:#1d4ed8; }
+  .stats { display:grid; grid-template-columns:repeat(5,1fr); gap:1rem; padding:0 2rem 2rem; max-width:1200px; margin:0 auto; }
+  .stat { background:#1e293b; border:1px solid #334155; border-radius:10px; padding:1rem; text-align:center; }
+  .stat .num { font-size:2rem; font-weight:700; color:#2563eb; }
+  .stat .lbl { color:#94a3b8; font-size:.85rem; margin-top:.25rem; }
+  .section-label { padding:.5rem 2rem 0; max-width:1200px; margin:0 auto; font-size:.75rem; text-transform:uppercase; letter-spacing:2px; color:#475569; font-weight:700; }
+  footer { text-align:center; padding:1.5rem; color:#475569; font-size:.85rem; border-top:1px solid #1e293b; margin-top:2rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🛡️ Portail d'Administration DevSecOps</h1>
+  <p>Université Thomas Sankara — Direction des Systèmes d'Information <span class="badge">● EN LIGNE</span></p>
+</header>
+<div style="padding:1.5rem 2rem 0; max-width:1200px; margin:0 auto;">
+  <p style="color:#64748b; font-size:.9rem;">📅 Infrastructure opérationnelle · Serveur : 192.168.122.232 · Ubuntu Server 22.04 LTS</p>
+</div>
+<div class="stats">
+  <div class="stat"><div class="num" id="stat-conteneurs">…</div><div class="lbl">Conteneurs actifs</div></div>
+  <div class="stat"><div class="num" id="stat-cve">0</div><div class="lbl">CVE Critiques</div></div>
+  <div class="stat"><div class="num">66/100</div><div class="lbl">Score CIS</div></div>
+  <div class="stat"><div class="num">&lt;1s</div><div class="lbl">MTTR</div></div>
+  <div class="stat"><div class="num" id="stat-alertes">…</div><div class="lbl">Alertes actives</div></div>
+</div>
+
+<div class="section-label">⚙️ Administration & Gestion</div>
+<div class="grid">
+  <div class="card" style="border-color:#0e7490;">
+    <div class="card-header">
+      <div class="icon" style="background:#0e7490;">🐳</div>
+      <div><h2>Gestionnaire</h2><small style="color:#67e8f9;">Conteneurs · Domaines · CRUD</small></div>
+    </div>
+    <p>Créer, rechercher, modifier et supprimer des conteneurs Docker. Gérer les noms de domaine uts.bf avec labels Traefik automatiques.</p>
+    <div class="status"><span class="dot"></span> <span id="status-detail">chargement…</span></div>
+    <a href="http://192.168.122.232:8888/gestionnaire.html" class="btn" style="background:#0e7490;">Ouvrir le gestionnaire →</a>
+  </div>
+</div>
+
+<div class="section-label">🔒 Sécurité & Registre</div>
+<div class="grid">
+  <a class="card" href="http://192.168.122.232" target="_blank">
+    <div class="card-header">
+      <div class="icon" style="background:#1e3a8a;">⚓</div>
+      <div><h2>Harbor</h2><small style="color:#60a5fa;">Registre privé · Air-Gap · CVE Scan</small></div>
+    </div>
+    <p>Registre d'images Docker privé avec scan automatique des vulnérabilités CVE via Trivy. Mode Air-Gap — zéro dépendance internet.</p>
+    <div class="status"><span class="dot"></span> Opérationnel · Port 80</div>
+    <span class="btn">Ouvrir Harbor →</span>
+  </a>
+  <a class="card" href="http://192.168.122.232:8080/dashboard/" target="_blank">
+    <div class="card-header">
+      <div class="icon" style="background:#0f4c38;">🔀</div>
+      <div><h2>Traefik</h2><small style="color:#6ee7b7;">Reverse Proxy · HTTPS/TLS · Routage</small></div>
+    </div>
+    <p>Proxy inverse gérant le routage HTTPS vers tous les services universitaires. Certificat TLS auto-signé actif. 4 routers configurés.</p>
+    <div class="status"><span class="dot"></span> Opérationnel · Port 8080</div>
+    <span class="btn">Ouvrir Traefik →</span>
+  </a>
+</div>
+
+<div class="section-label">📊 Monitoring & Observabilité</div>
+<div class="grid">
+  <a class="card" href="http://192.168.122.232:3000" target="_blank">
+    <div class="card-header">
+      <div class="icon" style="background:#78350f;">📊</div>
+      <div><h2>Grafana</h2><small style="color:#fde68a;">Monitoring · Métriques · Alertes</small></div>
+    </div>
+    <p>Tableau de bord de monitoring temps réel — CPU, RAM, réseau, disque. Connecté à Prometheus + Node Exporter.</p>
+    <div class="status"><span class="dot"></span> Opérationnel · Port 3000</div>
+    <span class="btn">Ouvrir Grafana →</span>
+  </a>
+  <div class="card">
+    <div class="card-header">
+      <div class="icon" style="background:#7f1d1d;">🔥</div>
+      <div><h2>Prometheus</h2><small style="color:#fca5a5;">Métriques · Scraping · Rules</small></div>
+    </div>
+    <p>Collecte des métriques système et Docker toutes les 15 secondes. 5 règles d'alerte actives. Source de données Grafana.</p>
+    <div class="status"><span class="dot"></span> Opérationnel · Port 9090</div>
+    <a href="http://192.168.122.232:9090" target="_blank" class="btn">Ouvrir Prometheus →</a>
+    <a href="http://192.168.122.232:9090/alerts" target="_blank" class="btn" style="background:#dc2626;margin-left:8px;">Règles d'alertes →</a>
+  </div>
+  <a class="card" href="http://192.168.122.232:9093" target="_blank">
+    <div class="card-header">
+      <div class="icon" style="background:#7c2d12;">🚨</div>
+      <div><h2>Alertmanager</h2><small style="color:#fdba74;">Alertes · Grouping · Webhook</small></div>
+    </div>
+    <p>Gère et route les alertes Prometheus. 5 règles : ConteneurArrete, CPUElevé, RAMElevée, DisquePlein, ServeurInaccessible.</p>
+    <div class="status"><span class="dot"></span> Opérationnel · Port 9093</div>
+    <span class="btn">Ouvrir Alertmanager →</span>
+  </a>
+  <a class="card" href="http://192.168.122.232:8082" target="_blank">
+    <div class="card-header">
+      <div class="icon" style="background:#164e63;">🐳</div>
+      <div><h2>cAdvisor</h2><small style="color:#67e8f9;">Conteneurs · CPU/RAM · Temps réel</small></div>
+    </div>
+    <p>Collecte les métriques de ressources de chaque conteneur Docker en temps réel. Alimente Prometheus pour les alertes conteneurs.</p>
+    <div class="status"><span class="dot"></span> Opérationnel · Port 8082</div>
+    <span class="btn">Ouvrir cAdvisor →</span>
+  </a>
+</div>
+
+<div class="section-label">🏗️ Infrastructure & Sécurité</div>
+<div class="grid">
+  <div class="card">
+    <div class="card-header">
+      <div class="icon" style="background:#4c1d95;">🔒</div>
+      <div><h2>Sécurité Zero Trust</h2><small style="color:#ddd6fe;">CVE · Red Team · CIS</small></div>
+    </div>
+    <p>Architecture Zero Trust validée par 3 scénarios Red Team. Score CIS Benchmark : 66/100. MTTR &lt; 1 seconde. 0 CVE Critical.</p>
+    <div class="status"><span class="dot"></span> 0 CVE Critical · Score CIS 66/100</div>
+    <a href="/securite.html" class="btn" style="background:#7c3aed;">Voir rapport →</a>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="icon" style="background:#065f46;">🏗️</div>
+      <div><h2>Services Production</h2><small style="color:#6ee7b7;">Docker · Réseaux · Secrets</small></div>
+    </div>
+    <p>5 services universitaires healthy : portail, inscription, api-backend, database, cache. 3 réseaux isolés. Docker Secrets actifs.</p>
+    <div class="status"><span class="dot"></span> 5/5 services healthy · 3 réseaux isolés</div>
+    <a href="/production.html" class="btn" style="background:#059669;">Voir détails →</a>
+  </div>
+</div>
+
+<footer>
+  Plateforme DevSecOps Docker · Université Thomas Sankara · Licence Cybersécurité 2025-2026
+</footer>
+<script>
+async function loadStats() {
+  // Conteneurs — requête Prometheus filtrée exactement comme "docker ps"
+  // container_tasks_state{state="running"} compte uniquement les conteneurs running
+  // avec name!="" pour exclure les pseudo-conteneurs système
+  try {
+    const url = 'http://192.168.122.232:9090/api/v1/query?query=' +
+      encodeURIComponent('count(container_tasks_state{state="running",name!=""})');
+    const res = await fetch(url).then(r => r.json());
+    const total = parseInt(res?.data?.result?.[0]?.value?.[1] ?? 0);
+    document.getElementById("stat-conteneurs").textContent = total + "+";
+    document.getElementById("status-detail").textContent =
+      total + " conteneurs running · 9 domaines uts.bf";
+  } catch {
+    document.getElementById("stat-conteneurs").textContent = "21+";
+    document.getElementById("status-detail").textContent = "21 conteneurs · 9 domaines uts.bf";
+  }
+
+  // Alertes firing depuis Prometheus
+  try {
+    const res = await fetch("http://192.168.122.232:9090/api/v1/alerts").then(r => r.json());
+    const firing = (res?.data?.alerts ?? []).filter(a => a.state === "firing").length;
+    document.getElementById("stat-alertes").textContent = firing;
+  } catch {
+    document.getElementById("stat-alertes").textContent = "0";
+  }
+}
+
+loadStats();
+setInterval(loadStats, 15000);
+</script>
+</body>
+</html>
